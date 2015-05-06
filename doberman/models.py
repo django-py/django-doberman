@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils import six
@@ -8,7 +9,7 @@ class AbstractCommonAccess(models.Model):
     Common Access
     """
     created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto=True)
+    modified = models.DateTimeField(auto_now=True)
 
     username = models.CharField(
         max_length=255,
@@ -35,6 +36,7 @@ class AbstractCommonAccess(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ('-created', 'username')
 
 
 class FailedAccessAttempt(AbstractCommonAccess):
@@ -45,6 +47,11 @@ class FailedAccessAttempt(AbstractCommonAccess):
     params_get = models.TextField(verbose_name=_("POST data"))
     is_locked = models.BooleanField(default=False)
     is_expired = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'doberman_failed_access_attempt'
+        verbose_name = _("Failed access attempt")
+        verbose_name_plural = _("Failed access attempts")
 
     def __unicode__(self):
         return six.u('Attempted access: %s %s') % (self.username, self.ip_address)
@@ -58,6 +65,11 @@ class AccessLog(AbstractCommonAccess):
         null=True,
         blank=True,
     )
+
+    class Meta:
+        db_table = 'doberman_access_log'
+        verbose_name = _("Access log")
+        verbose_name_plural = _("Access logs")
 
     def __unicode__(self):
         return six.u('Access log for %s') % (self.username,)
