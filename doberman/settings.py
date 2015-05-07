@@ -44,19 +44,19 @@ SETTING_PREFIX = 'DOBERMAN'
 # Search for the real IP address in the following order
 SETTING_IP_META_PRECEDENCE_ORDER = getattr(
     settings,
-    setting_name('IP_META_PRECEDENCE_ORDER'),
+    setting_name('IP-META-PRECEDENCE-ORDER'),
     DEFAULT_SETTING_IP_META_PRECEDENCE_ORDER
 )
 
 # Private IP addresses
 SETTING_IP_PRIVATE_IP_PREFIX = getattr(
     settings,
-    setting_name('IP_PRIVATE_IP_PREFIX'),
+    setting_name('IP-PRIVATE-IP-PREFIX'),
     DEFAULT_SETTING_IP_PRIVATE_IP_PREFIX
 )
 
 SETTING_IP_NON_PUBLIC_IP_PREFIX = SETTING_IP_PRIVATE_IP_PREFIX + getattr(
-    settings, setting_name('IP_NON_PUBLIC_IP_PREFIXES'),
+    settings, setting_name('IP-NON-PUBLIC-IP-PREFIXES'),
     DEFAULT_SETTING_IP_NON_PUBLIC_IP_PREFIX
 )
 
@@ -67,9 +67,10 @@ SETTING_GET_REAL_IP_ONLY = getattr(
 )
 
 # Number of max failed login attempts
-SETTING_MAX_FAILED_LOGINS = getattr(settings, setting_name('MAX_FAILED_LOGINS'), 7)
+SETTING_MAX_FAILED_LOGINS = getattr(settings, setting_name('MAX-FAILED-LOGINS'), 7)
 
 # Number of seconds after the failed login attempts are forgotten in seconds
-SETTING_LOCKOUT_TIME = getattr(settings, setting_name('LOCKOUT_TIME'), 600)
+SETTING_LOCKOUT_TIME = getattr(settings, setting_name('LOCKOUT-TIME'), 600)
 
 USERNAME_FIELD = getattr(settings, setting_name('USERNAME_FIELD'), 'username')
+
