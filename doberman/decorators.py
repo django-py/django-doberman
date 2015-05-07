@@ -15,7 +15,7 @@ def watch_login(func):
 
         response = func(request, *args, **kwargs)
         lockout = AccessAttempt(request)
-        lockout.check_logins()
+        lockout.check_login()
         return response
 
     return decorated_login

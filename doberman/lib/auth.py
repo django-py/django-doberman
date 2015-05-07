@@ -4,9 +4,11 @@ from django.template import RequestContext
 
 from ..models import FailedAccessAttempt
 from ..settings import SETTING_USERNAME_FORM_FIELD
+
 from ..settings import (
     SETTING_MAX_FAILED_ATTEMPTS,
-    SETTING_BLOCK_LOGIN_SECONDS
+    SETTING_BLOCK_LOGIN_SECONDS,
+    SETTING_LOCKOUT_TEMPLATE_NAME
 )
 
 from .ip import AccessIPAddress
@@ -24,10 +26,11 @@ class AccessAttempt(AccessIPAddress):
         self._class_model = FailedAccessAttempt if _class_model is None else _class_model
 
         self.ip = self.get_client_ip_address(self.request)
-        self.username = self.request.POST.get(SETTING_USERNAME_FORM_FIELD, None)
 
+        self.username = self.request.POST.get(SETTING_USERNAME_FORM_FIELD, None)
         self.max_failed_attempts = SETTING_MAX_FAILED_ATTEMPTS
         self.block_login_seconds = SETTING_BLOCK_LOGIN_SECONDS
+        self.template_name = SETTING_LOCKOUT_TEMPLATE_NAME
 
     def get_last_failed_access_attempt(self):
         """
@@ -70,7 +73,7 @@ class AccessAttempt(AccessIPAddress):
 
         return user_access
 
-    def check_logins(self):
+    def check_login(self):
         """
         :return:
         """
