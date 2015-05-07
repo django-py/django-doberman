@@ -46,6 +46,10 @@ def is_valid_ip(ip_str):
 
 
 def get_client_ip(request):
+    """
+    This code is based on package : https://github.com/un33k/django-ipware created for  Val Neekman. Thanks
+    return the client IP address
+    """
 
     client_ip_address = None
 
