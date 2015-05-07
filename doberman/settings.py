@@ -49,8 +49,6 @@ SETTING_IP_META_PRECEDENCE_ORDER = getattr(
 )
 
 # Private IP addresses
-# http://www.ietf.org/rfc/rfc3330.txt (IPv4)
-# http://www.ietf.org/rfc/rfc5156.txt (IPv6)
 SETTING_IP_PRIVATE_IP_PREFIX = getattr(
     settings,
     setting_name('IP_PRIVATE_IP_PREFIX'),
@@ -62,11 +60,16 @@ SETTING_IP_NON_PUBLIC_IP_PREFIX = SETTING_IP_PRIVATE_IP_PREFIX + getattr(
     DEFAULT_SETTING_IP_NON_PUBLIC_IP_PREFIX
 )
 
+SETTING_GET_REAL_IP_ONLY = getattr(
+    settings,
+    setting_name('GET-REAL-IP-ONLY'),
+    True
+)
+
 # Number of max failed login attempts
 SETTING_MAX_FAILED_LOGINS = getattr(settings, setting_name('MAX_FAILED_LOGINS'), 7)
 
 # Number of seconds after the failed login attempts are forgotten in seconds
 SETTING_LOCKOUT_TIME = getattr(settings, setting_name('LOCKOUT_TIME'), 600)
-
 
 USERNAME_FIELD = getattr(settings, setting_name('USERNAME_FIELD'), 'username')
