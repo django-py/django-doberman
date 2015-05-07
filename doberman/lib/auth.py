@@ -20,6 +20,8 @@ class AccessAttempt(AccessIPAddress):
     """
 
     def __init__(self, request, response, _class_model=None):
+        super(AccessAttempt, self).__init__()
+
         self.request = request
         self.response = response
 
@@ -32,6 +34,7 @@ class AccessAttempt(AccessIPAddress):
         self.block_login_seconds = SETTING_BLOCK_LOGIN_SECONDS
         self.template_name = SETTING_LOCKOUT_TEMPLATE_NAME
 
+
     def get_last_failed_access_attempt(self):
         """
         Return the last failed access attempt or None,
@@ -39,8 +42,8 @@ class AccessAttempt(AccessIPAddress):
         """
         kwargs = {'ip_address': self.ip, 'username': self.username, 'is_expired': False}
 
-        return self._model.get_last_failed_access_attempt(
-            kwargs
+        return self._class_model.get_last_failed_access_attempt(
+            **kwargs
         )
 
     def _check_failed_login(self):

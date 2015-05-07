@@ -54,7 +54,7 @@ class AbstractFailedAccessAttempt(models.Model):
         """
         try:
             lockout = cls.objects.get(
-                **kwargs
+                kwargs
             )
         except cls.DoesNotExists:
             lockout = None
