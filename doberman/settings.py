@@ -1,6 +1,12 @@
 from django.conf import settings
 
-from .utils import setting_name
+
+def to_setting_name(*names):
+    return '_'.join([name.upper().replace('-', '_') for name in names if name])
+
+
+def setting_name(*names):
+    return to_setting_name(*((SETTING_PREFIX,) + names))
 
 DEFAULT_SETTING_IP_PRIVATE_IP_PREFIX = (
     '0.', '1.', '2.',  # externally non-routable
@@ -67,10 +73,11 @@ SETTING_GET_REAL_IP_ONLY = getattr(
 )
 
 # Number of max failed login attempts
-SETTING_MAX_FAILED_LOGINS = getattr(settings, setting_name('MAX-FAILED-LOGINS'), 7)
+SETTING_MAX_FAILED_ATTEMPTS = getattr(settings, setting_name('MAX-FAILED-ATTEMPTS'), 7)
 
-# Number of seconds after the failed login attempts are forgotten in seconds
-SETTING_LOCKOUT_TIME = getattr(settings, setting_name('LOCKOUT-TIME'), 600)
+# Number of seconds after the failed login attempts are forgotten in seconds (Default, 1 minute)
+SETTING_FAILED_LOGIN_FORGOTTEN_SECONDS = getattr(settings, setting_name('FAILED-LOGIN-FORGOTTEN-SECONDS'), 60*60)
 
-USERNAME_FIELD = getattr(settings, setting_name('USERNAME_FIELD'), 'username')
+SETTING_USERNAME_FORM_FIELD = getattr(settings, setting_name('USERNAME-FORM-FIELD'), 'username')
 
+SETTING_BLOCK_LOGIN_SECONDS = getattr(settings, setting_name('BLOCK-LOGIN-SECONDS'), 60*10)

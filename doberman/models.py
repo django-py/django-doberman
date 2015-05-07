@@ -1,54 +1,43 @@
 # -*- coding: utf-8 -*-
+try:
+    from django.utils import timezone
+except ImportError:
+    from datetime import datetime as timezone
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils import six
 
+from .settings import SETTING_FAILED_LOGIN_FORGOTTEN_SECONDS
 
-class AbstractCommonAccess(models.Model):
+
+class AbstractFailedAccessAttempt(models.Model):
     """
-    Common Access
+    Abstract Failed Access Attempt
     """
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
     username = models.CharField(
         max_length=255,
-        verbose_name=_("Username")
+        verbose_name=_("Username"),
     )
     user_agent = models.CharField(
         max_length=255, blank=True,
         verbose_name=_("The client's user agent string")
     )
 
-    path_info = models.CharField(
-        max_length=255,
-        verbose_name=_("A string representing the full path to the requested page, not including the domain.")
-    )
-
     ip_address = models.IPAddressField(
         verbose_name=(_("The IP address of the client"))
     )
 
-    using_https = models.BooleanField(
-        default=False,
-        verbose_name=_("True if the request was made with HTTPS.")
-    )
-
-    class Meta:
-        abstract = True
-        ordering = ('-created', 'username')
-
-
-class FailedAccessAttempt(AbstractCommonAccess):
-    """
-    Failed Access Attemps
-    """
-    params_post = models.TextField(verbose_name=_("GET data"))
-    params_get = models.TextField(verbose_name=_("POST data"))
+    total_failed_attempts = models.PositiveIntegerField(verbose_name=_(u'Failed attempts'), default=0)
     is_locked = models.BooleanField(default=False)
     is_expired = models.BooleanField(default=False)
 
     class Meta:
+        abstract = True
+        ordering = ('-created', 'username')
         db_table = 'doberman_failed_access_attempt'
         verbose_name = _("Failed access attempt")
         verbose_name_plural = _("Failed access attempts")
@@ -56,20 +45,49 @@ class FailedAccessAttempt(AbstractCommonAccess):
     def __unicode__(self):
         return six.u('Attempted access: %s %s') % (self.username, self.ip_address)
 
+    @staticmethod
+    def get_last_failed_access_attempt(cls, **kwargs):
+        """
+        Return Failed access attempt of Client
+        :param ip_adress: String
+        :return:
+        """
+        try:
+            lockout = cls.objects.get(
+                **kwargs
+            )
+        except cls.DoesNotExists:
+            lockout = None
 
-class AccessLog(AbstractCommonAccess):
+        if lockout:
+            time_remaining = lockout.expiration_time
+            if time_remaining and time_remaining <= 0:
+                lockout.is_expired = True
+                lockout.save()
+                return None
+
+        return lockout
+
+    @property
+    def expiration_time(self):
+        """
+        Returns the time until this access attempt is forgotten.
+        """
+        logging_forgotten_time = SETTING_FAILED_LOGIN_FORGOTTEN_SECONDS
+
+        if logging_forgotten_time <= 0:
+            return None
+
+        now = timezone.now()
+        delta = now - self.modified
+        time_remaining = logging_forgotten_time - delta.seconds
+
+        return time_remaining
+
+
+class FailedAccessAttempt(AbstractFailedAccessAttempt):
     """
-    Access Log
+    Failed Access Attemps
     """
-    logout_time = models.DateTimeField(
-        null=True,
-        blank=True,
-    )
-
-    class Meta:
-        db_table = 'doberman_access_log'
-        verbose_name = _("Access log")
-        verbose_name_plural = _("Access logs")
-
-    def __unicode__(self):
-        return six.u('Access log for %s') % (self.username,)
+    params_post = models.TextField(verbose_name=_("GET data"))
+    params_get = models.TextField(verbose_name=_("POST data"))
