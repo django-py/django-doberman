@@ -1,8 +1,7 @@
 [Development] django-doberman
 ===============
 
-``django-doberman`` allow track all failed login.. locking users after too many failed login attempts.
-you can lock the IP of user or configure via setting for that doberman show a captcha after failed logins attempts of specific IP or user.
+``django-doberman`` 
 
 
 Requirements
