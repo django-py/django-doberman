@@ -1,4 +1,4 @@
-[in development] django-doberman
+[Development] django-doberman
 ===============
 
 ``django-doberman`` allow track all failed login.. locking users after too many failed login attempts.
@@ -74,4 +74,5 @@ Authors
 
 Library is by `Hanlle Nicolas Mendoza`.
 
-.. _Website: http://nicolasmendoza.org/
+
+.. Website: http://nicolasmendoza.org/
