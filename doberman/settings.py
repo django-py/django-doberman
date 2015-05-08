@@ -98,8 +98,8 @@ SETTING_LOCKOUT_TIME = getattr(
     60*2
 )
 
-SETTING_LOCKOUT_TEMPLATE_NAME = getattr(
+SETTING_LOCKOUT_TEMPLATE = getattr(
     settings,
-    setting_name('SETTING-LOCKOUT-TEMPLATE-NAME'),
+    setting_name('SETTING-LOCKOUT-TEMPLATE'),
     'doberman/lockout.html'
 )

@@ -8,7 +8,7 @@ from ..settings import SETTING_USERNAME_FORM_FIELD
 from ..settings import (
     SETTING_MAX_FAILED_ATTEMPTS,
     SETTING_LOCKOUT_TIME,
-    SETTING_LOCKOUT_TEMPLATE_NAME,
+    SETTING_LOCKOUT_TEMPLATE,
 )
 
 from .ip import AccessIPAddress
@@ -21,7 +21,7 @@ class AccessAttempt(AccessIPAddress):
     model = FailedAccessAttempt  # todo allow change via setting :)
     max_failed_attempts = SETTING_MAX_FAILED_ATTEMPTS
     block_login_seconds = SETTING_LOCKOUT_TIME
-    template_name = SETTING_LOCKOUT_TEMPLATE_NAME
+    template_name = SETTING_LOCKOUT_TEMPLATE
 
     def __init__(self, request, response):
         super(AccessAttempt, self).__init__()
@@ -92,7 +92,6 @@ class AccessAttempt(AccessIPAddress):
         """
         :return:
         """
-        print 'IP------->', self.ip, '<------'
 
         return render_to_response(
             self.template_name,
