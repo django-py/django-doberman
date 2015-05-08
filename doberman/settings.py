@@ -76,14 +76,14 @@ SETTING_GET_REAL_IP_ONLY = getattr(
 SETTING_MAX_FAILED_ATTEMPTS = getattr(
     settings,
     setting_name('MAX-FAILED-ATTEMPTS'),
-    7
+    3
 )
 
 # Number of seconds after the failed login attempts are forgotten in seconds (Default, 1 minute)
 SETTING_FAILED_LOGIN_FORGOTTEN_SECONDS = getattr(
     settings,
     setting_name('FAILED-LOGIN-FORGOTTEN-SECONDS'),
-    60*60
+    60*10
 )
 
 SETTING_USERNAME_FORM_FIELD = getattr(
@@ -95,7 +95,7 @@ SETTING_USERNAME_FORM_FIELD = getattr(
 SETTING_BLOCK_LOGIN_SECONDS = getattr(
     settings,
     setting_name('BLOCK-LOGIN-SECONDS'),
-    60*10
+    60*2
 )
 
 SETTING_LOCKOUT_TEMPLATE_NAME = getattr(

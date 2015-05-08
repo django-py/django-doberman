@@ -31,7 +31,7 @@ class AbstractFailedAccessAttempt(models.Model):
         verbose_name=(_("The IP address of the client"))
     )
 
-    total_failed_attempts = models.PositiveIntegerField(verbose_name=_(u'Failed attempts'), default=0)
+    failed_attempts = models.PositiveIntegerField(verbose_name=_(u'Failed attempts'), default=0)
     is_locked = models.BooleanField(default=False)
     is_expired = models.BooleanField(default=False)
 
@@ -45,7 +45,7 @@ class AbstractFailedAccessAttempt(models.Model):
     def __unicode__(self):
         return six.u('Attempted access: %s %s') % (self.username, self.ip_address)
 
-    @staticmethod
+    @classmethod
     def get_last_failed_access_attempt(cls, **kwargs):
         """
         Return Failed access attempt of Client
@@ -54,9 +54,9 @@ class AbstractFailedAccessAttempt(models.Model):
         """
         try:
             lockout = cls.objects.get(
-                kwargs
+                **kwargs
             )
-        except cls.DoesNotExists:
+        except cls.DoesNotExist:
             lockout = None
 
         if lockout:

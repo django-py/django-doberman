@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('username', models.CharField(max_length=255, verbose_name='Username')),
                 ('user_agent', models.CharField(max_length=255, verbose_name="The client's user agent string", blank=True)),
                 ('ip_address', models.IPAddressField(verbose_name='The IP address of the client')),
-                ('total_failed_attempts', models.PositiveIntegerField(default=0, verbose_name='Failed attempts')),
+                ('failed_attempts', models.PositiveIntegerField(default=0, verbose_name='Failed attempts')),
                 ('is_locked', models.BooleanField(default=False)),
                 ('is_expired', models.BooleanField(default=False)),
                 ('params_post', models.TextField(verbose_name='GET data')),

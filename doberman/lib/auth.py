@@ -8,7 +8,7 @@ from ..settings import SETTING_USERNAME_FORM_FIELD
 from ..settings import (
     SETTING_MAX_FAILED_ATTEMPTS,
     SETTING_BLOCK_LOGIN_SECONDS,
-    SETTING_LOCKOUT_TEMPLATE_NAME
+    SETTING_LOCKOUT_TEMPLATE_NAME,
 )
 
 from .ip import AccessIPAddress
@@ -18,22 +18,18 @@ class AccessAttempt(AccessIPAddress):
     """
     Failed Access Attempt class
     """
+    model = FailedAccessAttempt  # todo allow change via setting :)
+    max_failed_attempts = SETTING_MAX_FAILED_ATTEMPTS
+    block_login_seconds = SETTING_BLOCK_LOGIN_SECONDS
+    template_name = SETTING_LOCKOUT_TEMPLATE_NAME
+    user_access = None
 
-    def __init__(self, request, response, _class_model=None):
+    def __init__(self, request, response):
         super(AccessAttempt, self).__init__()
-
         self.request = request
         self.response = response
-
-        self._class_model = FailedAccessAttempt if _class_model is None else _class_model
-
         self.ip = self.get_client_ip_address(self.request)
-
         self.username = self.request.POST.get(SETTING_USERNAME_FORM_FIELD, None)
-        self.max_failed_attempts = SETTING_MAX_FAILED_ATTEMPTS
-        self.block_login_seconds = SETTING_BLOCK_LOGIN_SECONDS
-        self.template_name = SETTING_LOCKOUT_TEMPLATE_NAME
-
 
     def get_last_failed_access_attempt(self):
         """
@@ -42,11 +38,11 @@ class AccessAttempt(AccessIPAddress):
         """
         kwargs = {'ip_address': self.ip, 'username': self.username, 'is_expired': False}
 
-        return self._class_model.get_last_failed_access_attempt(
+        return self.model.get_last_failed_access_attempt(
             **kwargs
         )
 
-    def _check_failed_login(self):
+    def check_failed_login(self):
         """
         'Private method', check failed logins
         """
@@ -54,7 +50,9 @@ class AccessAttempt(AccessIPAddress):
 
         if not last_attempt:
             # create a new entry
-            user_access = self._models(ip_address=self.ip)
+            user_access = self.model(ip_address=self.ip)
+        elif last_attempt:
+            user_access = last_attempt
 
         if self.request.method == 'POST':
 
@@ -66,7 +64,8 @@ class AccessAttempt(AccessIPAddress):
                 user_access.params_get = self.request.GET
                 user_access.params_post = self.request.POST
 
-                if user_access.total_failed_attemps >= self.max_failed_attempts:
+                if user_access.failed_attempts >= self.max_failed_attempts:
+                    self.user_access = user_access
                     user_access.is_locked = True
                 user_access.save()
 
@@ -76,18 +75,27 @@ class AccessAttempt(AccessIPAddress):
 
         return user_access
 
-    def check_login(self):
+    @property
+    def is_ip_banned(self):
+        """
+        Ip banned
+        :return:
+        """
+        kwargs = {'ip_address': self.ip, 'is_expired': False, 'is_locked': True}
+
+        return self.model.get_last_failed_access_attempt(
+            **kwargs
+        )
+
+    def get_lockout_response(self):
         """
         :return:
         """
-        user_access = self._check_failed_login()
+        user_access = self.user_access
 
-        if user_access.is_locked:
-            return render_to_response(
-                self.template_name, {
-                    'user_access': user_access,
-                    'lockout_time': self.block_login_seconds
-                },
-                context_instance=RequestContext(self.request)
-
-            )
+        return render_to_response(
+            self.template_name,
+            {'user_access': user_access,
+             'lockout_time': self.block_login_seconds
+             }, context_instance=RequestContext(self.request)
+        )

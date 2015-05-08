@@ -14,8 +14,13 @@ def watch_login(func):
     def decorated_login(request, *args, **kwargs):
 
         response = func(request, *args, **kwargs)
+
         lockout = AccessAttempt(request, response)
-        lockout.check_login()
+        user_access = lockout.check_failed_login()
+
+        if user_access.is_locked or lockout.is_ip_banned:
+            return lockout.get_lockout_response()
+
         return response
 
     return decorated_login
