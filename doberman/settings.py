@@ -55,20 +55,20 @@ SETTING_IP_META_PRECEDENCE_ORDER = getattr(
 )
 
 # Private IP addresses
-SETTING_IP_PRIVATE_IP_PREFIX = getattr(
+SETTING_PRIVATE_IP_PREFIXES = getattr(
     settings,
-    setting_name('IP-PRIVATE-IP-PREFIX'),
+    setting_name('PRIVATE-IP-PREFIXES'),
     DEFAULT_SETTING_IP_PRIVATE_IP_PREFIX
 )
 
-SETTING_IP_NON_PUBLIC_IP_PREFIX = SETTING_IP_PRIVATE_IP_PREFIX + getattr(
-    settings, setting_name('IP-NON-PUBLIC-IP-PREFIXES'),
+SETTING_NON_PUBLIC_IP_PREFIXES = SETTING_PRIVATE_IP_PREFIXES + getattr(
+    settings, setting_name('NON-PUBLIC-IP-PREFIXES'),
     DEFAULT_SETTING_IP_NON_PUBLIC_IP_PREFIX
 )
 
-SETTING_GET_REAL_IP_ONLY = getattr(
+SETTING_REAL_IP_ONLY = getattr(
     settings,
-    setting_name('GET-REAL-IP-ONLY'),
+    setting_name('REAL-IP-ONLY'),
     True
 )
 
@@ -76,14 +76,14 @@ SETTING_GET_REAL_IP_ONLY = getattr(
 SETTING_MAX_FAILED_ATTEMPTS = getattr(
     settings,
     setting_name('MAX-FAILED-ATTEMPTS'),
-    3
+    10
 )
 
 # Number of seconds after the failed login attempts are forgotten in seconds (Default, 1 minute)
-SETTING_FAILED_LOGIN_FORGOTTEN_SECONDS = getattr(
+SETTING_LOGIN_FORGOTTEN_SECONDS = getattr(
     settings,
-    setting_name('FAILED-LOGIN-FORGOTTEN-SECONDS'),
-    60*10
+    setting_name('LOGIN-FORGOTTEN-SECONDS'),
+    60*2  # 1 minute
 )
 
 SETTING_USERNAME_FORM_FIELD = getattr(
@@ -92,9 +92,9 @@ SETTING_USERNAME_FORM_FIELD = getattr(
     'username'
 )
 
-SETTING_BLOCK_LOGIN_SECONDS = getattr(
+SETTING_LOCKOUT_TIME = getattr(
     settings,
-    setting_name('BLOCK-LOGIN-SECONDS'),
+    setting_name('LOCKOUT-TIME'),
     60*2
 )
 

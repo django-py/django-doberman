@@ -7,7 +7,7 @@ from ..settings import SETTING_USERNAME_FORM_FIELD
 
 from ..settings import (
     SETTING_MAX_FAILED_ATTEMPTS,
-    SETTING_BLOCK_LOGIN_SECONDS,
+    SETTING_LOCKOUT_TIME,
     SETTING_LOCKOUT_TEMPLATE_NAME,
 )
 
@@ -20,9 +20,8 @@ class AccessAttempt(AccessIPAddress):
     """
     model = FailedAccessAttempt  # todo allow change via setting :)
     max_failed_attempts = SETTING_MAX_FAILED_ATTEMPTS
-    block_login_seconds = SETTING_BLOCK_LOGIN_SECONDS
+    block_login_seconds = SETTING_LOCKOUT_TIME
     template_name = SETTING_LOCKOUT_TEMPLATE_NAME
-    user_access = None
 
     def __init__(self, request, response):
         super(AccessAttempt, self).__init__()
@@ -30,6 +29,13 @@ class AccessAttempt(AccessIPAddress):
         self.response = response
         self.ip = self.get_client_ip_address(self.request)
         self.username = self.request.POST.get(SETTING_USERNAME_FORM_FIELD, None)
+        self.last_attempt_instance= None
+
+    def get_queryset(self, **kwargs):
+        qs = self.model.get_last_failed_access_attempt(**kwargs)
+        self.last_attempt_instance = qs
+
+        return qs
 
     def get_last_failed_access_attempt(self):
         """
@@ -38,9 +44,7 @@ class AccessAttempt(AccessIPAddress):
         """
         kwargs = {'ip_address': self.ip, 'username': self.username, 'is_expired': False}
 
-        return self.model.get_last_failed_access_attempt(
-            **kwargs
-        )
+        return self.get_queryset(**kwargs)
 
     def check_failed_login(self):
         """
@@ -65,7 +69,6 @@ class AccessAttempt(AccessIPAddress):
                 user_access.params_post = self.request.POST
 
                 if user_access.failed_attempts >= self.max_failed_attempts:
-                    self.user_access = user_access
                     user_access.is_locked = True
                 user_access.save()
 
@@ -83,19 +86,17 @@ class AccessAttempt(AccessIPAddress):
         """
         kwargs = {'ip_address': self.ip, 'is_expired': False, 'is_locked': True}
 
-        return self.model.get_last_failed_access_attempt(
-            **kwargs
-        )
+        return self.get_queryset(**kwargs)
 
     def get_lockout_response(self):
         """
         :return:
         """
-        user_access = self.user_access
+        print 'IP------->', self.ip, '<------'
 
         return render_to_response(
             self.template_name,
-            {'user_access': user_access,
+            {'user_attempts': self.last_attempt_instance,
              'lockout_time': self.block_login_seconds
              }, context_instance=RequestContext(self.request)
         )

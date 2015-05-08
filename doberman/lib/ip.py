@@ -2,9 +2,9 @@
 import socket
 
 from ..settings import (
-    SETTING_GET_REAL_IP_ONLY,
+    SETTING_REAL_IP_ONLY,
     SETTING_IP_META_PRECEDENCE_ORDER,
-    SETTING_IP_NON_PUBLIC_IP_PREFIX,
+    SETTING_NON_PUBLIC_IP_PREFIXES,
 )
 
 __all__ = ['AccessIPAddress']
@@ -17,9 +17,9 @@ class AccessIPAddress(object):
     for more information, please see: https://github.com/un33k/django-ipware
     """
     def __init__(self):
-        self.get_real_ip_only = SETTING_GET_REAL_IP_ONLY
+        self.get_real_ip_only = SETTING_REAL_IP_ONLY
         self.ip_meta_precedence_order = SETTING_IP_META_PRECEDENCE_ORDER
-        self.ip_non_public_ip_prefix = SETTING_IP_NON_PUBLIC_IP_PREFIX
+        self.ip_non_public_ip_prefix = SETTING_NON_PUBLIC_IP_PREFIXES
 
     @staticmethod
     def check_ipv6(ip_str):
