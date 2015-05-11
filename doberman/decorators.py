@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from functools import wraps
 
-from .lib.auth import AccessAttempt
+from .utils.auth import AccessAttempt
 
 
 def watch_login(func):
