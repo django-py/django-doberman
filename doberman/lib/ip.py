@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 import socket
 
+from django.conf import settings
+
+from ..exceptions import UnknownIPAddress
+
 from ..settings import (
     SETTING_REAL_IP_ONLY,
     SETTING_IP_META_PRECEDENCE_ORDER,
@@ -84,5 +88,11 @@ class AccessIPAddress(object):
 
                             elif client_ip_address in loopback and ip_str not in loopback:
                                 client_ip_address = ip_str
+
+        if client_ip_address is None and settings.DEBUG:
+            raise UnknownIPAddress(
+                "Unknown IP, if you are working on localhost/development, "
+                "please configure DOBERMAN_REAL_IP_ONLY to False"
+            )
 
         return client_ip_address

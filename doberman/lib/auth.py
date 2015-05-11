@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from ..models import FailedAccessAttempt
+from ..exceptions import DobermanSettingException
 from ..settings import SETTING_USERNAME_FORM_FIELD
 
 from ..settings import (
@@ -28,8 +29,8 @@ class AccessAttempt(AccessIPAddress):
         self.request = request
         self.response = response
         self.ip = self.get_client_ip_address(self.request)
+        self.last_attempt_instance = None
         self.username = self.request.POST.get(SETTING_USERNAME_FORM_FIELD, None)
-        self.last_attempt_instance= None
 
     def get_queryset(self, **kwargs):
         qs = self.model.get_last_failed_access_attempt(**kwargs)
@@ -59,6 +60,12 @@ class AccessAttempt(AccessIPAddress):
             user_access = last_attempt
 
         if self.request.method == 'POST':
+
+            if self.username is None:
+                raise DobermanSettingException(
+                    "Bad username form field, if you are using a custom field please configure: "
+                    "DOBERMAN_USERNAME_FORM_FIELD via settings."
+                )
 
             if self.response.status_code != 302:
 

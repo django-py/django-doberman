@@ -14,7 +14,7 @@ def watch_login(func):
     def decorated_login(request, *args, **kwargs):
 
         response = func(request, *args, **kwargs)
-        print request
+
         lockout = AccessAttempt(request, response)
         user_access = lockout.check_failed_login()
 
