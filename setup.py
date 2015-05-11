@@ -6,7 +6,7 @@ setup(
     author="Nicolas Mendoza",
     author_email="niccolasmendoza@gmail.com",
     description="Django app that locks out users after too many failed login attempts.",
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
     license="MIT License",
     keywords="django locks users account login attempts banned ip doberman authentication",
     url="https://github.com/nicchub/django-doberman",
