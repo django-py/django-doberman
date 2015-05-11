@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 setup(
     name="doberman",
-    version="0.1.0",
+    version="0.2.0",
     author="Nicolas Mendoza",
     author_email="niccolasmendoza@gmail.com",
     description="Django app that locks out users after too many failed login attempts.",
