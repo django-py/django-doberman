@@ -1,18 +1,21 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 setup(
-    name="doberman",
-    version="0.4.0",
+    name="django-doberman",
+    version="0.1.0",
     author="Nicolas Mendoza",
     author_email="niccolasmendoza@gmail.com",
+    maintainer='Nicolas Mendoza',
+    maintainer_email='niccolasmendoza@gmail.com',
     description="Django app that locks out users after too many failed login attempts.",
     long_description=open('README.rst').read(),
-    package_dir={'': 'src'},
-    packages=find_packages('src'),
-    include_package_data=True,
     license="MIT License",
     keywords="django locks users account login attempts banned ip doberman authentication",
     url="https://github.com/nicchub/django-doberman",
+    packages=[
+        'doberman'
+    ],
+    include_package_data=True,
     tests_require=['python-coveralls'],
     install_requires=[
         'Django>=1.7.0'

@@ -8,7 +8,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils import six
 
-from settings import SETTING_LOGIN_FORGOTTEN_SECONDS
+from .settings import SETTING_LOGIN_FORGOTTEN_SECONDS
 
 
 class AbstractFailedAccessAttempt(models.Model):
