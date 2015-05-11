@@ -2,15 +2,18 @@
 from setuptools import setup, find_packages
 setup(
     name="doberman",
-    version="0.2.0",
+    version="0.3.0",
     author="Nicolas Mendoza",
     author_email="niccolasmendoza@gmail.com",
     description="Django app that locks out users after too many failed login attempts.",
     long_description=open('README.rst').read(),
+    package_dir={'': 'src'},
+    packages=find_packages('src'),
+    include_package_data=True,
     license="MIT License",
     keywords="django locks users account login attempts banned ip doberman authentication",
     url="https://github.com/nicchub/django-doberman",
-    packages=find_packages(exclude=[]),
+    packages=find_packages(exclude=['tests', 'tests.*']),
     tests_require=['python-coveralls'],
     classifiers=[
         "Development Status :: 1 - Planning",
@@ -28,5 +31,3 @@ setup(
         "Topic :: Software Development :: Libraries"
     ]
 )
-
-
