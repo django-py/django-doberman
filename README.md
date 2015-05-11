@@ -1,7 +1,7 @@
 [Development] django-doberman
 ===============
 
-``django-doberman`` 
+``django-doberman``   Django app that locks out users after too many failed login attempts. 
 
 
 Requirements
