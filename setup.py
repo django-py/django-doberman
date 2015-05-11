@@ -13,7 +13,6 @@ setup(
     license="MIT License",
     keywords="django locks users account login attempts banned ip doberman authentication",
     url="https://github.com/nicchub/django-doberman",
-    packages=find_packages(exclude=['tests', 'tests.*']),
     tests_require=['python-coveralls'],
     classifiers=[
         "Development Status :: 1 - Planning",
