@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 setup(
-    name="Django-doberman",
+    name="doberman",
     version="0.1.0",
     author="Nicolas Mendoza",
     author_email="niccolasmendoza@gmail.com",
