@@ -50,10 +50,12 @@ Settings
 
 DOBERMAN_MAX_FAILED_ATTEMPTS
     Default: ``10``.
+    
     Number of max failed login attempt.
 
 DOBERMAN_LOCKOUT_TIME
     Default: ``600`` (10 minutes).
+    
     Number of seconds after the failed login attempts are forgotten in seconds.
 
 DOBERMAN_REAL_IP_ONLY
@@ -62,10 +64,12 @@ DOBERMAN_REAL_IP_ONLY
 
 DOBERMAN_LOGIN_FORGOTTEN_SECONDS
     Default: ``300``
+    
     Timeout forgotten login attempts of user.
 
 DOBERMAN_USERNAME_FORM_FIELD
     Default: 'username'
+    
     Field username form field, change when you are use a diferent "username", for example: 'email'.
 
 DOBERMAN_LOCKOUT_TEMPLATE
