@@ -83,7 +83,7 @@ SETTING_MAX_FAILED_ATTEMPTS = getattr(
 SETTING_LOGIN_FORGOTTEN_SECONDS = getattr(
     settings,
     setting_name('LOGIN-FORGOTTEN-SECONDS'),
-    60*2  # 1 minute
+    60*5
 )
 
 SETTING_USERNAME_FORM_FIELD = getattr(
@@ -95,7 +95,7 @@ SETTING_USERNAME_FORM_FIELD = getattr(
 SETTING_LOCKOUT_TIME = getattr(
     settings,
     setting_name('LOCKOUT-TIME'),
-    60*2
+    60*10
 )
 
 SETTING_LOCKOUT_TEMPLATE = getattr(
