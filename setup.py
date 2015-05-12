@@ -1,5 +1,13 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
+
+requirements = ['Django>=1.7.0', ]
+
+try:
+    from unittest import mock
+except ImportError:
+    requirements.append('mock')
+
 setup(
     name="django-doberman",
     version="0.2.0",
@@ -17,9 +25,9 @@ setup(
     ],
     include_package_data=True,
     tests_require=['python-coveralls'],
-    install_requires=[
-        'Django>=1.7.0'
-    ],
+
+    install_requires=requirements,
+
     classifiers=[
         "Development Status :: 1 - Planning",
         "Intended Audience :: Developers",

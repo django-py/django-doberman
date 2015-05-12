@@ -2,3 +2,4 @@ include README.rst
 recursive-include doberman/templates *
 recursive-include doberman/migrations *
 recursive-include doberman/utils *
+recursive-include doberman/tests *
