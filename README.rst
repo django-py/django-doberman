@@ -77,7 +77,7 @@ DOBERMAN_MODEL
 
 DOBERMAN_IP_META_PRECEDENCE_ORDER
     Default: (
-    'HTTP_X_FORWARDED_FOR',  # X-Forwarded-For: client, proxy1, proxy2
+    'HTTP_X_FORWARDED_FOR',
     'HTTP_CLIENT_IP',
     'HTTP_X_REAL_IP',
     'HTTP_X_FORWARDED',
@@ -87,6 +87,7 @@ DOBERMAN_IP_META_PRECEDENCE_ORDER
     'HTTP_VIA',
     'REMOTE_ADDR',
     )
+    
     This used for discovery the real IP, you ca change the precedence order.
 
 
