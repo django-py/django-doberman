@@ -6,8 +6,8 @@
 .. image:: https://badge.fury.io/py/django-doberman.png
    :target: http://badge.fury.io/py/django-doberman
 
-.. image:: https://pypip.in/d/PythonGithubAPI/django-doberman.png
-   :target: https://pypip.in/d/PythonGithubAPI/django-doberman.png
+.. image:: https://pypip.in/d/django-doberman/badge.png
+   :target: https://pypip.in/d/django-doberman/badge.png
 
 Requirements
 ------------
