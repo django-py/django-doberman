@@ -58,7 +58,6 @@ class AccessAttempt(AccessIPAddress):
             user_access = last_attempt
 
         if self.request.method == 'POST':
-
             if self.username is None:
                 raise DobermanSettingException(
                     "Bad username form field, if you are using a custom field please configure: "
@@ -75,6 +74,7 @@ class AccessAttempt(AccessIPAddress):
 
                 if user_access.failed_attempts >= self.max_failed_attempts:
                     user_access.is_locked = True
+
                 user_access.save()
 
             elif self.response.status_code == 302 and not user_access.is_locked:
