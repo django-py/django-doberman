@@ -4,10 +4,10 @@
 ``django-doberman``   Django app that locks out users after too many failed login attempts.
 
 .. image:: https://badge.fury.io/py/django-doberman.png
-   :target: http://badge.fury.io/py/django-doberman
+   :target: https://pypi.python.org/pypi/django-doberman/0.2.0
 
-.. image:: https://pypip.in/d/PythonGithubAPI/django-doberman.png
-   :target: https://pypip.in/d/PythonGithubAPI/django-doberman.png
+.. image:: https://pypip.in/d/django-doberman/badge.png
+   :target: https://pypi.python.org/pypi/django-doberman/0.2.0
 
 Requirements
 ------------
