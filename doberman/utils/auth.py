@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.apps import apps
 
 from ..models import FailedAccessAttempt
-from ..exceptions import DobermanSettingException
+from ..exceptions import DobermanImproperlyConfigured
 from ..settings import SETTING_USERNAME_FORM_FIELD
 from ..settings import (
     SETTING_MAX_FAILED_ATTEMPTS,
     SETTING_LOCKOUT_TIME,
     SETTING_LOCKOUT_TEMPLATE,
+    SETTING_MODEL
 )
 from .ip import AccessIPAddress
 
@@ -17,7 +19,7 @@ class AccessAttempt(AccessIPAddress):
     """
     Failed Access Attempt class
     """
-    model = FailedAccessAttempt  # todo allow change via setting :)
+    model = FailedAccessAttempt
     max_failed_attempts = SETTING_MAX_FAILED_ATTEMPTS
     block_login_seconds = SETTING_LOCKOUT_TIME
     template_name = SETTING_LOCKOUT_TEMPLATE
@@ -29,6 +31,13 @@ class AccessAttempt(AccessIPAddress):
         self.ip = self.get_client_ip_address(self.request)
         self.last_attempt_instance = None
         self.username = self.request.POST.get(SETTING_USERNAME_FORM_FIELD, None)
+
+        if SETTING_MODEL:
+            try:
+                self.model = apps.get_model(SETTING_MODEL)
+            except LookupError:
+                raise DobermanImproperlyConfigured(
+                    "DOBERMAN-MODEL refers to model '%s' that has not been installed: " % SETTING_MODEL)
 
     def get_queryset(self, **kwargs):
         qs = self.model.get_last_failed_access_attempt(**kwargs)

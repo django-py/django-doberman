@@ -1,7 +1,3 @@
 
-class DobermanSettingException(Exception):
-    pass
-
-
-class UnknownIPAddress(Exception):
+class DobermanImproperlyConfigured(Exception):
     pass

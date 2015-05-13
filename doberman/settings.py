@@ -103,3 +103,9 @@ SETTING_LOCKOUT_TEMPLATE = getattr(
     setting_name('SETTING-LOCKOUT-TEMPLATE'),
     'doberman/lockout.html'
 )
+
+SETTING_MODEL = getattr(
+    settings,
+    setting_name('MODEL'),
+    False
+)

@@ -3,7 +3,7 @@ import socket
 
 from django.conf import settings
 
-from ..exceptions import UnknownIPAddress
+from ..exceptions import DobermanImproperlyConfigured
 from ..settings import (
     SETTING_REAL_IP_ONLY,
     SETTING_IP_META_PRECEDENCE_ORDER,
@@ -89,9 +89,9 @@ class AccessIPAddress(object):
                                 client_ip_address = ip_str
 
         if client_ip_address is None and settings.DEBUG:
-            raise UnknownIPAddress(
-                "Unknown IP, if you are working on localhost/development, "
-                "please configure DOBERMAN_REAL_IP_ONLY to False"
+            raise DobermanImproperlyConfigured(
+                "Unknown IP, maybe you are working on localhost/development, "
+                "so please set in your setting: DOBERMAN_REAL_IP_ONLY=False"
             )
 
         return client_ip_address
