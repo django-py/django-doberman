@@ -1,0 +1,36 @@
+{% extends "accounts/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-md-12 text-center">
+    <h1 class="h2">{% trans 'Authentication' %}</h1>
+    <p><strong>{% trans ' Django app that locks out users after too many failed login attempts.' %}</strong></p>
+  <p>{% trans 'Enter username: "nicco" and password: "incorrectpassword"' %}</p>
+    <br>
+
+  {% if form.errors.username %}
+        <div class="alert alert-danger">{{ form.errors.username }}</div>
+    {% endif %}
+
+
+    <form id="login" method="post" action="{% url 'accounts:login' %}">
+      {% csrf_token %}
+       <div class="form-group {% if form.errors.username %}has-error{% endif %}">
+        {{ form.username }}
+      </div>
+       <div class="form-group {% if form.errors.password %}has-error{% endif %}">
+        {{ form.password }}
+      </div>
+      <input class="btn btn-primary btn-xl btn-block" type="submit" value="{% trans 'login' %}" />
+    </form>
+    <br>
+    <br>
+    <hr>
+
+  </div>
+</div>
+
+{% endblock %}

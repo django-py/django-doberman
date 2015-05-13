@@ -1,0 +1,10 @@
+dj-database-url
+dj-static
+Django
+django-toolbelt
+gunicorn
+pip
+psycopg2
+setuptools
+static3
+django-doberman
