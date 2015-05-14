@@ -67,6 +67,7 @@ class AccessIPAddress(object):
 
         # searching the IP address
         for key in self.ip_meta_precedence_order:
+
             ip_meta_value = request.META.get(key, '').strip()
 
             if ip_meta_value != '':

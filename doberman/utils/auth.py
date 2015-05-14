@@ -68,7 +68,7 @@ class AccessAttempt(AccessIPAddress):
 
         if self.request.method == 'POST':
             if self.username is None:
-                raise DobermanSettingException(
+                raise DobermanImproperlyConfigured(
                     "Bad username form field, if you are using a custom field please configure: "
                     "DOBERMAN_USERNAME_FORM_FIELD via settings."
                 )

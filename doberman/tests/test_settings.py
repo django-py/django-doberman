@@ -29,7 +29,12 @@ INSTALLED_APPS = (
 
 SECRET_KEY = 'secret-for-test-secret-secret'
 
+ROOT_URLCONF = 'doberman.tests.test_urls'
 
-DOBERMAN_USERNAME_FORM_FIELD = 'email'
+TEMPLATE_DIRS = (
+    "doberman/tests/templates",
+)
+
+
 DOBERMAN_MAX_FAILED_ATTEMPTS = 5
 DOBERMAN_LOCKOUT_TIME = 60*10  # 10 minutos
