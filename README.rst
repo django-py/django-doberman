@@ -1,6 +1,3 @@
-[Development] django-doberman
-===============
-
 .. image::
     https://raw.githubusercontent.com/nicchub/django-doberman/master/images/DjangoDoberman.png
 
