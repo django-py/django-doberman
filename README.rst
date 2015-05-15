@@ -2,7 +2,7 @@
 ===============
 
 .. image::
-    https://raw.githubusercontent.com/nicchub/django-dobermans/master/images/DjangoDoberman.png
+    https://raw.githubusercontent.com/nicchub/django-doberman/master/images/DjangoDoberman.png
 
 ``django-doberman``   Django app that locks out users after too many failed login attempts.
 
