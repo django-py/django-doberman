@@ -92,7 +92,6 @@ DOBERMAN_MODEL
     Allow to use a custom Model for tracking failed Access Attempts.
 
 DOBERMAN_IP_META_PRECEDENCE_ORDER
-
     Default: (
 
     'HTTP_X_FORWARDED_FOR',  # X-Forwarded-For: client, proxy1, proxy2
