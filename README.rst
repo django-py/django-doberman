@@ -52,7 +52,7 @@ Running tests
 
 Tests can be run, after you clone the repository and having django installed, like::
 
-    PYTHONPATH=$PYTHONPATH:$PWD django-admin.py test doberman --settings=doberman.test_settings
+    PYTHONPATH=$PYTHONPATH:$PWD django-admin.py test doberman --settings=doberman.tests.test_settings
 
 
 Configuration
@@ -87,8 +87,9 @@ DOBERMAN_LOCKOUT_TEMPLATE
     Path to alternative lockout template.
 
 DOBERMAN_MODEL
-    Allow define a different Model.
+    Default: 'doberman.FailedAccessAttempt'
 
+    Allow to use a custom Model for tracking failed Access Attempts.
 
 DOBERMAN_IP_META_PRECEDENCE_ORDER
 
