@@ -110,6 +110,7 @@ class AccessAttempt(AccessIPAddress):
         return render_to_response(
             self.template_name,
             {'user_attempts': self.last_attempt_instance,
-             'lockout_time': self.block_login_seconds
+             'lockout_time': self.block_login_seconds,
+             'ip_address': self.ip
              }, context_instance=RequestContext(self.request)
         )
