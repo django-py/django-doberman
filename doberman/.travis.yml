@@ -1,0 +1,10 @@
+language: python
+python:
+  - "2.7"
+  - "3.0"
+env:
+  - DJANGO=1.7
+  - DJANGO=1.8
+
+script:
+  - PYTHONPATH=$PYTHONPATH:$PWD django-admin.py test doberman--settings=doberman.tests.test_settings
