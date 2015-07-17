@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import logging
 from functools import wraps
 
-from .utils.auth import AccessAttempt
+from .core import AccessAttempt
 
+logger = logging.getLogger(__name__)
 
 def watch_login(func):
     """

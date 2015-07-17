@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+This is a adapted version of the util package called django-ipware created for @Val Neekman (thanks)
+for more information, please see: https://github.com/un33k/django-ipware
+"""
 import socket
 
 from django.conf import settings
@@ -10,14 +14,13 @@ from ..settings import (
     SETTING_NON_PUBLIC_IP_PREFIXES,
 )
 
-__all__ = ['AccessIPAddress']
-
 
 class AccessIPAddress(object):
     """
     Access IP addres
-    Part of this code is based on package : https://github.com/un33k/django-ipware created for  @Val Neekman. Thanks
-    for more information, please see: https://github.com/un33k/django-ipware
+    Part of this code is based on package : https://github.com/un33k/django-ipware
+
+
     """
     def __init__(self):
         self.get_real_ip_only = SETTING_REAL_IP_ONLY
