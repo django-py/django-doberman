@@ -1,5 +1,5 @@
+# -*- coding: utf-8 -*-
 from django.conf import settings
-
 
 def to_setting_name(*names):
     return '_'.join([name.upper().replace('-', '_') for name in names if name])
@@ -8,7 +8,11 @@ def to_setting_name(*names):
 def setting_name(*names):
     return to_setting_name(*((SETTING_PREFIX,) + names))
 
-DEFAULT_SETTING_IP_PRIVATE_IP_PREFIX = (
+
+SETTING_PREFIX = 'DOBERMAN'
+
+
+IPWARE_DEFAULT_SETTING_IP_PRIVATE_IP_PREFIX = (
     '0.', '1.', '2.',  # externally non-routable
     '10.',  # class A private block
     '169.254.',  # link-local block
@@ -27,7 +31,7 @@ DEFAULT_SETTING_IP_PRIVATE_IP_PREFIX = (
     )
 
 
-DEFAULT_SETTING_IP_META_PRECEDENCE_ORDER = (
+IPWARE_DEFAULT_SETTING_IP_META_PRECEDENCE_ORDER = (
     'HTTP_X_FORWARDED_FOR',  # X-Forwarded-For: client, proxy1, proxy2
     'HTTP_CLIENT_IP',
     'HTTP_X_REAL_IP',
@@ -39,73 +43,91 @@ DEFAULT_SETTING_IP_META_PRECEDENCE_ORDER = (
     'REMOTE_ADDR',
     )
 
-DEFAULT_SETTING_IP_NON_PUBLIC_IP_PREFIX = (
+IPWARE_DEFAULT_SETTING_IP_NON_PUBLIC_IP_PREFIX = (
     '127.',  # IPv4 loopback device
     '::1',  # IPv6 loopback device
 )
 
 
-SETTING_PREFIX = 'DOBERMAN'
-
 # Search for the real IP address in the following order
-SETTING_IP_META_PRECEDENCE_ORDER = getattr(
+DOBERMAN_IP_META_PRECEDENCE_ORDER = getattr(
     settings,
     setting_name('IP-META-PRECEDENCE-ORDER'),
-    DEFAULT_SETTING_IP_META_PRECEDENCE_ORDER
+    IPWARE_DEFAULT_SETTING_IP_META_PRECEDENCE_ORDER
 )
 
 # Private IP addresses
-SETTING_PRIVATE_IP_PREFIXES = getattr(
+DOBERMAN_PRIVATE_IP_PREFIXES = getattr(
     settings,
     setting_name('PRIVATE-IP-PREFIXES'),
-    DEFAULT_SETTING_IP_PRIVATE_IP_PREFIX
+    IPWARE_DEFAULT_SETTING_IP_PRIVATE_IP_PREFIX
 )
 
-SETTING_NON_PUBLIC_IP_PREFIXES = SETTING_PRIVATE_IP_PREFIXES + getattr(
+DOBERMAN_NON_PUBLIC_IP_PREFIXES = DOBERMAN_PRIVATE_IP_PREFIXES + getattr(
     settings, setting_name('NON-PUBLIC-IP-PREFIXES'),
-    DEFAULT_SETTING_IP_NON_PUBLIC_IP_PREFIX
+    IPWARE_DEFAULT_SETTING_IP_NON_PUBLIC_IP_PREFIX
 )
 
-SETTING_REAL_IP_ONLY = getattr(
+DOBERMAN_REAL_IP_ONLY = getattr(
     settings,
     setting_name('REAL-IP-ONLY'),
     True
 )
 
 # Number of max failed login attempts
-SETTING_MAX_FAILED_ATTEMPTS = getattr(
+DOBERMAN_MAX_FAILED_ATTEMPTS = getattr(
     settings,
     setting_name('MAX-FAILED-ATTEMPTS'),
     10
 )
 
 # Number of seconds after the failed login attempts are forgotten in seconds (Default, 1 minute)
-SETTING_LOGIN_FORGOTTEN_SECONDS = getattr(
+DOBERMAN_LOGIN_FORGOTTEN_SECONDS = getattr(
     settings,
     setting_name('LOGIN-FORGOTTEN-SECONDS'),
     60*5
 )
 
-SETTING_USERNAME_FORM_FIELD = getattr(
+DOBERMAN_USERNAME_FORM_FIELD = getattr(
     settings,
     setting_name('USERNAME-FORM-FIELD'),
     'username'
 )
 
-SETTING_LOCKOUT_TIME = getattr(
+DOBERMAN_LOCKOUT_TIME = getattr(
     settings,
     setting_name('LOCKOUT-TIME'),
     60*10
 )
 
-SETTING_LOCKOUT_TEMPLATE = getattr(
+DOBERMAN_IPLOCKOUT_TEMPLATE = getattr(
     settings,
-    setting_name('SETTING-LOCKOUT-TEMPLATE'),
-    'doberman/lockout.html'
+    setting_name('IPLOCKOUT-TEMPLATE'),
+    'doberman/iplockout.html'
 )
 
-SETTING_MODEL = getattr(
+DOBERMAN_CUSTOM_MODEL = getattr(
     settings,
     setting_name('MODEL'),
     False
+)
+
+# contrib.recaptcha library
+
+DOBERMAN_RECAPTCHA_FORM_PROTECTION = getattr(
+    settings,
+    setting_name('RECAPTCHA-FORM-PROTECTION'),
+    True
+)
+
+DOBERMAN_RECAPTCHA_KEY_SITE = getattr(
+    settings,
+    setting_name('RECAPTCHA-KEY-SITE'),
+    None
+)
+
+DOBERMAN_RECAPTCHA_SECRET_KEY = getattr(
+    settings,
+    setting_name('RECAPTCHA-SECRET-KEY'),
+    None
 )

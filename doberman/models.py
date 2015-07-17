@@ -8,7 +8,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils import six
 
-from .settings import SETTING_LOGIN_FORGOTTEN_SECONDS
+from .settings import DOBERMAN_LOGIN_FORGOTTEN_SECONDS
 
 
 class AbstractFailedAccessAttempt(models.Model):
@@ -73,7 +73,7 @@ class AbstractFailedAccessAttempt(models.Model):
         """
         Returns the time until this access attempt is forgotten.
         """
-        logging_forgotten_time = SETTING_LOGIN_FORGOTTEN_SECONDS
+        logging_forgotten_time = DOBERMAN_LOGIN_FORGOTTEN_SECONDS
 
         if logging_forgotten_time <= 0:
             return None

@@ -6,22 +6,22 @@ from django.apps import apps
 from ..models import FailedAccessAttempt
 from ..contrib.ipware import AccessIPAddress
 from ..exceptions import DobermanImproperlyConfigured
-from ..settings import SETTING_USERNAME_FORM_FIELD
 from ..settings import (
-    SETTING_MAX_FAILED_ATTEMPTS,
-    SETTING_LOCKOUT_TIME,
-    SETTING_LOCKOUT_TEMPLATE,
-    SETTING_MODEL
+    DOBERMAN_USERNAME_FORM_FIELD,
+    DOBERMAN_MAX_FAILED_ATTEMPTS,
+    DOBERMAN_LOCKOUT_TIME,
+    DOBERMAN_IPLOCKOUT_TEMPLATE,
+    DOBERMAN_CUSTOM_MODEL
 )
 
 def get_doberman_model():
         try:
-            return apps.get_model(SETTING_MODEL)
+            return apps.get_model(DOBERMAN_CUSTOM_MODEL)
         except ValueError:
             raise DobermanImproperlyConfigured("AUTH_USER_MODEL must be of the form 'app_label.model_name'")
         except LookupError:
             raise DobermanImproperlyConfigured(
-                "DOBERMAN-MODEL refers to model '%s' that has not been installed: " % SETTING_MODEL
+                "DOBERMAN-MODEL refers to model '%s' that has not been installed: " % DOBERMAN_CUSTOM_MODEL
             )
 
 class AccessAttempt(AccessIPAddress):
@@ -29,9 +29,9 @@ class AccessAttempt(AccessIPAddress):
     Failed Access Attempt class
     """
     model = FailedAccessAttempt
-    max_failed_attempts = SETTING_MAX_FAILED_ATTEMPTS
-    block_login_seconds = SETTING_LOCKOUT_TIME
-    template_name = SETTING_LOCKOUT_TEMPLATE
+    max_failed_attempts = DOBERMAN_MAX_FAILED_ATTEMPTS
+    block_login_seconds = DOBERMAN_LOCKOUT_TIME
+    template_name = DOBERMAN_IPLOCKOUT_TEMPLATE
 
     def __init__(self, request, response):
         super(AccessAttempt, self).__init__()
@@ -39,10 +39,9 @@ class AccessAttempt(AccessIPAddress):
         self.response = response
         self.ip = self.get_client_ip_address(self.request)
         self.last_attempt_instance = None
-        self.username = self.request.POST.get(SETTING_USERNAME_FORM_FIELD, None)
+        self.username = self.request.POST.get(DOBERMAN_USERNAME_FORM_FIELD, None)
 
         self._model = get_doberman_model()
-
 
     def get_queryset(self, **kwargs):
         qs = self.model.get_last_failed_access_attempt(**kwargs)
