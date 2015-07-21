@@ -1,28 +1,27 @@
 # -*- coding: utf-8 -*-
+"""
+This is a adapted version of the util package called django-ipware created for @Val Neekman (thanks)
+for more information, please see: https://github.com/un33k/django-ipware
+"""
 import socket
+from doberman.settings import DOBERMAN_REAL_IP_ONLY, DOBERMAN_IP_META_PRECEDENCE_ORDER, DOBERMAN_NON_PUBLIC_IP_PREFIXES
 
 from django.conf import settings
 
-from ..exceptions import DobermanImproperlyConfigured
-from ..settings import (
-    SETTING_REAL_IP_ONLY,
-    SETTING_IP_META_PRECEDENCE_ORDER,
-    SETTING_NON_PUBLIC_IP_PREFIXES,
-)
-
-__all__ = ['AccessIPAddress']
+from doberman.exceptions import DobermanImproperlyConfigured
 
 
 class AccessIPAddress(object):
     """
     Access IP addres
-    Part of this code is based on package : https://github.com/un33k/django-ipware created for  @Val Neekman. Thanks
-    for more information, please see: https://github.com/un33k/django-ipware
+    Part of this code is based on package : https://github.com/un33k/django-ipware
+
+
     """
     def __init__(self):
-        self.get_real_ip_only = SETTING_REAL_IP_ONLY
-        self.ip_meta_precedence_order = SETTING_IP_META_PRECEDENCE_ORDER
-        self.ip_non_public_ip_prefix = SETTING_NON_PUBLIC_IP_PREFIXES
+        self.get_real_ip_only = DOBERMAN_REAL_IP_ONLY
+        self.ip_meta_precedence_order = DOBERMAN_IP_META_PRECEDENCE_ORDER
+        self.ip_non_public_ip_prefix = DOBERMAN_NON_PUBLIC_IP_PREFIXES
 
     @staticmethod
     def check_ipv6(ip_str):

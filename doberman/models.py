@@ -8,7 +8,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils import six
 
-from .settings import SETTING_LOGIN_FORGOTTEN_SECONDS
+from .settings import DOBERMAN_LOGIN_FORGOTTEN_SECONDS
 
 
 class AbstractFailedAccessAttempt(models.Model):
@@ -16,7 +16,7 @@ class AbstractFailedAccessAttempt(models.Model):
     Abstract Failed Access Attempt
     """
     created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(auto_now=True, verbose_name=_(u'Last attempt'))
 
     username = models.CharField(
         max_length=255,
@@ -31,9 +31,13 @@ class AbstractFailedAccessAttempt(models.Model):
         verbose_name=(_("The IP address of the client"))
     )
 
-    failed_attempts = models.PositiveIntegerField(verbose_name=_(u'Failed attempts'), default=0)
-    is_locked = models.BooleanField(default=False)
-    is_expired = models.BooleanField(default=False)
+    failed_attempts = models.PositiveIntegerField(verbose_name=_(u'Failed login attempts'), default=0)
+    is_locked = models.BooleanField(default=False, verbose_name=_(u'User/IP Locked'))
+    is_expired = models.BooleanField(default=False, verbose_name=u'Lock expired')
+
+    captcha_enabled = models.BooleanField(default=False)
+    captcha_passed = models.BooleanField(default=False)
+    captcha_attempts = models.SmallIntegerField(default=0)
 
     class Meta:
         abstract = True
@@ -73,7 +77,7 @@ class AbstractFailedAccessAttempt(models.Model):
         """
         Returns the time until this access attempt is forgotten.
         """
-        logging_forgotten_time = SETTING_LOGIN_FORGOTTEN_SECONDS
+        logging_forgotten_time = DOBERMAN_LOGIN_FORGOTTEN_SECONDS
 
         if logging_forgotten_time <= 0:
             return None
