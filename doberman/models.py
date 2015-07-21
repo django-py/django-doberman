@@ -16,7 +16,7 @@ class AbstractFailedAccessAttempt(models.Model):
     Abstract Failed Access Attempt
     """
     created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(auto_now=True, verbose_name=_(u'Last attempt'))
 
     username = models.CharField(
         max_length=255,
@@ -31,9 +31,13 @@ class AbstractFailedAccessAttempt(models.Model):
         verbose_name=(_("The IP address of the client"))
     )
 
-    failed_attempts = models.PositiveIntegerField(verbose_name=_(u'Failed attempts'), default=0)
-    is_locked = models.BooleanField(default=False)
-    is_expired = models.BooleanField(default=False)
+    failed_attempts = models.PositiveIntegerField(verbose_name=_(u'Failed login attempts'), default=0)
+    is_locked = models.BooleanField(default=False, verbose_name=_(u'User/IP Locked'))
+    is_expired = models.BooleanField(default=False, verbose_name=u'Lock expired')
+
+    captcha_enabled = models.BooleanField(default=False)
+    captcha_passed = models.BooleanField(default=False)
+    captcha_attempts = models.SmallIntegerField(default=0)
 
     class Meta:
         abstract = True
