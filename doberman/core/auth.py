@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+from django.core.handlers.wsgi import WSGIRequest
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.apps import apps
 
-from ..models import FailedAccessAttempt
 from ..contrib.ipware import AccessIPAddress
 from ..exceptions import DobermanImproperlyConfigured
 from ..settings import (
@@ -28,45 +28,48 @@ class AccessAttempt(AccessIPAddress):
     """
     Failed Access Attempt class
     """
-    model = FailedAccessAttempt
     max_failed_attempts = DOBERMAN_MAX_FAILED_ATTEMPTS
     block_login_seconds = DOBERMAN_LOCKOUT_TIME
     template_name = DOBERMAN_IPLOCKOUT_TEMPLATE
 
     def __init__(self, request, response):
         super(AccessAttempt, self).__init__()
-        self.request = request
+
+        if isinstance(request, WSGIRequest):
+            self.request = request
+        else:
+            self.request = request.request  #cbv
+
         self.response = response
+
         self.ip = self.get_client_ip_address(self.request)
+
         self.last_attempt_instance = None
         self.username = self.request.POST.get(DOBERMAN_USERNAME_FORM_FIELD, None)
 
-        self._model = get_doberman_model()
+        self._FailedAccessAttemptModel = get_doberman_model()  # doberman supported custom models, see documentation
 
-    def get_queryset(self, **kwargs):
-        qs = self.model.get_last_failed_access_attempt(**kwargs)
-        self.last_attempt_instance = qs
-
-        return qs
-
-    def get_last_failed_access_attempt(self):
+    def get_last_failed_access_attempt(self, **kwargs):
         """
         Return the last failed access attempt or None,
-        the model can be change but is obligatory inplement the method "get_last_failed_access_attempt"
+        the model can be change but is obligatory implement the method "get_last_failed_access_attempt"
         """
-        kwargs = {'ip_address': self.ip, 'username': self.username, 'is_expired': False}
 
-        return self.get_queryset(**kwargs)
+        last_failed_access = self._FailedAccessAttemptModel.get_last_failed_access_attempt(
+            **kwargs
+        )
+
+        return last_failed_access
 
     def check_failed_login(self):
         """
-        'Private method', check failed logins
+        'Private method', check failed logins, it's used for wath_login decorator
         """
         last_attempt = self.get_last_failed_access_attempt()
 
         if not last_attempt:
             # create a new entry
-            user_access = self.model(ip_address=self.ip)
+            user_access = self._FailedAccessAttemptModel(ip_address=self.ip)
         elif last_attempt:
             user_access = last_attempt
 
@@ -96,15 +99,17 @@ class AccessAttempt(AccessIPAddress):
 
         return user_access
 
-    @property
-    def is_ip_banned(self):
+    def inspect(self):
         """
-        Ip banned
+        Inspect access attempt, used for catpcha flow
         :return:
         """
-        kwargs = {'ip_address': self.ip, 'is_expired': False, 'is_locked': True}
-
-        return self.get_queryset(**kwargs)
+        last_attempt = self.get_last_failed_access_attempt(
+            ip_address=self.ip,
+            username=self.username,
+            is_expired=False,
+            captcha_passed=False
+        )
 
     def get_lockout_response(self):
         """

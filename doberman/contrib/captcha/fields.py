@@ -11,6 +11,7 @@ except ImportError:
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from django.forms.widgets import HiddenInput
 
 from captcha import client
 from captcha.widgets import ReCaptcha
@@ -31,17 +32,24 @@ class DobermanCaptchaField(forms.CharField):
         JavaScript variables as specified in
         https://code.google.com/apis/recaptcha/docs/customization.html
         """
-        public_key = public_key if public_key else \
+        self.attrs = attrs
+        self.public_key = public_key if public_key else \
             settings.RECAPTCHA_PUBLIC_KEY
         self.private_key = private_key if private_key else \
             settings.RECAPTCHA_PRIVATE_KEY
         self.use_ssl = use_ssl if use_ssl is not None else getattr(
             settings, 'RECAPTCHA_USE_SSL', False)
 
-        self.widget = ReCaptcha(
-            public_key=public_key, use_ssl=self.use_ssl, attrs=attrs)
-        self.required = True
+        self.widget = HiddenInput()
+        self.blocked = False
         super(DobermanCaptchaField, self).__init__(*args, **kwargs)
+
+        self.required = False
+
+    def _show_captcha_form(self):
+        self.widget = ReCaptcha(
+            public_key=self.public_key, use_ssl=self.use_ssl, attrs=self.attrs
+        )
 
     def get_remote_ip(self):
         f = sys._getframe()
@@ -56,28 +64,29 @@ class DobermanCaptchaField(forms.CharField):
             f = f.f_back
 
     def clean(self, values):
-        super(DobermanCaptchaField, self).clean(values[1])
-        recaptcha_challenge_value = smart_unicode(values[0])
-        recaptcha_response_value = smart_unicode(values[1])
+        print '---'*80 , self.required, self.blocked
+        if self.required:
+            super(DobermanCaptchaField, self).clean(values[1])
+            recaptcha_challenge_value = smart_unicode(values[0])
+            recaptcha_response_value = smart_unicode(values[1])
+            if os.environ.get('RECAPTCHA_TESTING', None) == 'True' and \
+                    recaptcha_response_value == 'PASSED':
+                return values[0]
 
-        if os.environ.get('RECAPTCHA_TESTING', None) == 'True' and \
-                recaptcha_response_value == 'PASSED':
+            try:
+                check_captcha = client.submit(
+                    recaptcha_challenge_value,
+                    recaptcha_response_value, private_key=self.private_key,
+                    remoteip=self.get_remote_ip(), use_ssl=self.use_ssl)
+
+            except socket.error: # Catch timeouts, etc
+                raise ValidationError(
+                    self.error_messages['captcha_error']
+                )
+
+            if not check_captcha.is_valid:
+                print 'invalido'*100
+                raise ValidationError(
+                    self.error_messages['captcha_invalid']
+                )
             return values[0]
-
-        try:
-            check_captcha = client.submit(
-                recaptcha_challenge_value,
-                recaptcha_response_value, private_key=self.private_key,
-                remoteip=self.get_remote_ip(), use_ssl=self.use_ssl)
-
-        except socket.error: # Catch timeouts, etc
-            raise ValidationError(
-                self.error_messages['captcha_error']
-            )
-
-        if not check_captcha.is_valid:
-            print 'invalido'*100
-            raise ValidationError(
-                self.error_messages['captcha_invalid']
-            )
-        return values[0]
