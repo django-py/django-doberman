@@ -26,3 +26,21 @@ def watch_login(func):
         return response
 
     return decorated_login
+
+
+def protect_login_with_captcha(func):
+    """
+    Protect the login with a captcha after of N failed access attempts
+    :param func:
+    :return:
+    """
+    @wraps(func)
+    def decorated_login(request, *args, **kwargs):
+        response = func(request, *args, **kwargs)
+
+        access_attempt = AccessAttempt(request, response)
+        access_attempt.inspect()
+
+        return response
+
+    return decorated_login

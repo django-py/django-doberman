@@ -6,3 +6,5 @@
 failed login attempts.{% endblocktrans %}</p>
 <p>{% blocktrans with user_attempts.ip_address as ip %}Your IP {{ ip_address }} has been locked for {{ lockout_time }} seconds.{% endblocktrans %}</p>
 <p>{% blocktrans with user_attempts.expiration_time as expiration_time_left  %}Lockout will expire in {{ expiration_time_left }} seconds.{% endblocktrans %}</p>
+
+

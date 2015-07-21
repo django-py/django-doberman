@@ -103,7 +103,7 @@ DOBERMAN_LOCKOUT_TIME = getattr(
 DOBERMAN_IPLOCKOUT_TEMPLATE = getattr(
     settings,
     setting_name('IPLOCKOUT-TEMPLATE'),
-    'doberman/iplockout.html'
+    'doberman/ip_lockout.html'
 )
 
 DOBERMAN_CUSTOM_MODEL = getattr(
@@ -113,7 +113,6 @@ DOBERMAN_CUSTOM_MODEL = getattr(
 )
 
 # contrib.recaptcha library
-
 DOBERMAN_RECAPTCHA_FORM_PROTECTION = getattr(
     settings,
     setting_name('RECAPTCHA-FORM-PROTECTION'),

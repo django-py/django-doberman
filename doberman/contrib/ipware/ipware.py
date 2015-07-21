@@ -4,11 +4,11 @@ This is a adapted version of the util package called django-ipware created for @
 for more information, please see: https://github.com/un33k/django-ipware
 """
 import socket
-from ..settings import DOBERMAN_REAL_IP_ONLY, DOBERMAN_IP_META_PRECEDENCE_ORDER, DOBERMAN_NON_PUBLIC_IP_PREFIXES
+from doberman.settings import DOBERMAN_REAL_IP_ONLY, DOBERMAN_IP_META_PRECEDENCE_ORDER, DOBERMAN_NON_PUBLIC_IP_PREFIXES
 
 from django.conf import settings
 
-from ..exceptions import DobermanImproperlyConfigured
+from doberman.exceptions import DobermanImproperlyConfigured
 
 
 class AccessIPAddress(object):
