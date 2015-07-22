@@ -35,16 +35,15 @@ class AbstractFailedAccessAttempt(models.Model):
     is_locked = models.BooleanField(default=False, verbose_name=_(u'User/IP Locked'))
     is_expired = models.BooleanField(default=False, verbose_name=u'Lock expired')
 
-    captcha_enabled = models.BooleanField(default=False)
+    captcha_enabled = models.BooleanField(default=False, verbose_name=_("Captcha protection"))
     captcha_passed = models.BooleanField(default=False)
-    captcha_attempts = models.SmallIntegerField(default=0)
+    captcha_attempts = models.SmallIntegerField(default=0, verbose_name=_("Captcha failed attempts"))
 
     class Meta:
         abstract = True
-        ordering = ('-created', 'username')
-        db_table = 'doberman_failed_access_attempt'
-        verbose_name = _("Failed access attempt")
-        verbose_name_plural = _("Failed access attempts")
+        ordering = ('-modified',)
+        verbose_name = _("Access attempts")
+        verbose_name_plural = _("Access attempts")
 
     def __unicode__(self):
         return six.u('Attempted access: %s %s') % (self.username, self.ip_address)
