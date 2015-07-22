@@ -16,6 +16,11 @@ from django.forms.widgets import HiddenInput
 from captcha import client
 from captcha.widgets import ReCaptcha
 
+from doberman.settings import DOBERMAN_USERNAME_FORM_FIELD
+from doberman.core.auth import get_doberman_model
+from doberman.contrib.ipware import AccessIPAddress
+from doberman.models import FailedAccessAttempt
+
 
 class DobermanCaptchaField(forms.CharField):
     default_error_messages = {
@@ -32,6 +37,7 @@ class DobermanCaptchaField(forms.CharField):
         JavaScript variables as specified in
         https://code.google.com/apis/recaptcha/docs/customization.html
         """
+
         self.attrs = attrs
         self.public_key = public_key if public_key else \
             settings.RECAPTCHA_PUBLIC_KEY
@@ -44,27 +50,57 @@ class DobermanCaptchaField(forms.CharField):
         self.blocked = False
         super(DobermanCaptchaField, self).__init__(*args, **kwargs)
 
-        self.required = False
+        self.doberman_model = get_doberman_model()
+        self._username = None
+        self._ip = None
+        self._last_attempt = None
+        self.required = True
 
-    def _show_captcha_form(self):
-        self.widget = ReCaptcha(
-            public_key=self.public_key, use_ssl=self.use_ssl, attrs=self.attrs
-        )
+    def _captcha_form(self):
+        """
+        captcha form
+        :return:
+        """
+        try:
+            last_attempt = FailedAccessAttempt.objects.get(
+                ip_address=self._ip,
+                is_locked=True,
+                captcha_enabled=True,
+                is_expired=False
 
-    def get_remote_ip(self):
+            )
+        except FailedAccessAttempt.DoesNotExist:
+            last_attempt = None
+            self.required = False
+            self.widget = HiddenInput()
+
+        if last_attempt:
+            self._last_attempt = last_attempt
+
+            if last_attempt.is_locked:
+                self.required = True
+                self.widget = ReCaptcha(
+                    public_key=self.public_key, use_ssl=self.use_ssl, attrs=self.attrs
+                )
+
+    def dynamic_fields(self):
         f = sys._getframe()
         while f:
             if 'request' in f.f_locals:
                 request = f.f_locals['request']
                 if request:
-                    remote_ip = request.META.get('REMOTE_ADDR', '')
-                    forwarded_ip = request.META.get('HTTP_X_FORWARDED_FOR', '')
-                    ip = remote_ip if not forwarded_ip else forwarded_ip
-                    return ip
+                    self._username = request.POST.get(DOBERMAN_USERNAME_FORM_FIELD, None)
+                    access = AccessIPAddress()
+                    self._ip = access.get_client_ip_address(request)
+
+                    return self._ip
             f = f.f_back
 
+    def initialize(self):
+        self.dynamic_fields()
+        self._captcha_form()
+
     def clean(self, values):
-        print '---'*80 , self.required, self.blocked
         if self.required:
             super(DobermanCaptchaField, self).clean(values[1])
             recaptcha_challenge_value = smart_unicode(values[0])
@@ -77,7 +113,7 @@ class DobermanCaptchaField(forms.CharField):
                 check_captcha = client.submit(
                     recaptcha_challenge_value,
                     recaptcha_response_value, private_key=self.private_key,
-                    remoteip=self.get_remote_ip(), use_ssl=self.use_ssl)
+                    remoteip=self._ip, use_ssl=self.use_ssl)
 
             except socket.error: # Catch timeouts, etc
                 raise ValidationError(
@@ -85,7 +121,8 @@ class DobermanCaptchaField(forms.CharField):
                 )
 
             if not check_captcha.is_valid:
-                print 'invalido'*100
+                self._last_attempt.captcha_attempts += 1
+                self._last_attempt.save()
                 raise ValidationError(
                     self.error_messages['captcha_invalid']
                 )

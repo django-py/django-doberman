@@ -18,5 +18,6 @@ class FailedAccessAttemptAdmin(admin.ModelAdmin):
         'captcha_attempts',
         'user_agent'
     )
+    search_fields = ['username']
 
 admin.site.register(FailedAccessAttempt, FailedAccessAttemptAdmin)

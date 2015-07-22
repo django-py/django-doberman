@@ -106,10 +106,40 @@ class AccessAttempt(AccessIPAddress):
         """
         last_attempt = self.get_last_failed_access_attempt(
             ip_address=self.ip,
-            username=self.username,
-            is_expired=False,
-            captcha_passed=False
+            captcha_enabled=True,
+            captcha_passed=False,
+            is_expired=False
         )
+
+        if last_attempt is None and not self.request.user.is_authenticated():
+            # create a new entry
+            user_access = self._FailedAccessAttemptModel(
+                ip_address=self.ip,
+                username=self.username,
+                captcha_enabled=True,
+                captcha_passed=False,
+                is_expired=False
+            )
+        elif last_attempt:
+            user_access = last_attempt
+
+        if self.request.method == 'POST':
+
+            if not self.request.user.is_authenticated():
+
+                user_access.user_agent = self.request.META.get('HTTP_USER_AGENT', '<unknown user agent>')[:255]
+                user_access.username = self.username
+                user_access.failed_attempts += 1
+                user_access.params_get = self.request.GET
+                user_access.params_post = self.request.POST
+
+                if user_access.failed_attempts >= self.max_failed_attempts:
+                    user_access.is_locked = True
+                user_access.save()
+
+            elif self.request.user.is_authenticated() and last_attempt:
+                last_attempt.is_expired = True
+                last_attempt.save()
 
     def get_lockout_response(self):
         """
