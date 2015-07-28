@@ -21,7 +21,7 @@ setup(
     keywords="django locks users account login attempts banned ip doberman authentication",
     url="https://github.com/nicchub/django-doberman",
     packages=[
-        'doberman'
+        'doberman/', 'doberman/contrib', 'doberman/migrations/', 'doberman/templates/', 'doberman/contrib/captcha/',
     ],
     include_package_data=True,
     tests_require=['python-coveralls'],
