@@ -10,7 +10,7 @@ except ImportError:
 
 setup(
     name="django-doberman",
-    version="0.3.0",
+    version="0.5.1",
     author="Nicolas Mendoza",
     author_email="niccolasmendoza@gmail.com",
     maintainer='Nicolas Mendoza',

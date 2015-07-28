@@ -6,7 +6,6 @@ except ImportError:
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.utils import six
 
 from .settings import DOBERMAN_LOGIN_FORGOTTEN_SECONDS
 
@@ -45,8 +44,8 @@ class AbstractFailedAccessAttempt(models.Model):
         verbose_name = _("Access attempts")
         verbose_name_plural = _("Access attempts")
 
-    def __unicode__(self):
-        return six.u('Attempted access: %s %s') % (self.username, self.ip_address)
+    def __str__(self):
+        return self.username
 
     @classmethod
     def get_last_failed_access_attempt(cls, **kwargs):
