@@ -7,7 +7,7 @@ except ImportError:
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from .settings import DOBERMAN_LOGIN_FORGOTTEN_SECONDS
+from settings import DOBERMAN_LOGIN_FORGOTTEN_SECONDS
 
 
 class AbstractFailedAccessAttempt(models.Model):
