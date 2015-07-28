@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.apps import apps
 
-from .contrib.ipware.ipware import AccessIPAddress
+from .contrib.ipware import AccessIPAddress
 from .exceptions import DobermanImproperlyConfigured
 from .settings import (
     DOBERMAN_USERNAME_FORM_FIELD,
