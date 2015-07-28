@@ -17,7 +17,7 @@ from captcha import client
 from captcha.widgets import ReCaptcha
 
 from doberman.settings import DOBERMAN_USERNAME_FORM_FIELD
-from doberman.core.auth import get_doberman_model
+from doberman.auth import get_doberman_model
 from doberman.contrib.ipware import AccessIPAddress
 from doberman.models import FailedAccessAttempt
 
