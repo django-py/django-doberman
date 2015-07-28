@@ -2,7 +2,7 @@
 import logging
 from functools import wraps
 
-from .core import AccessAttempt
+from .core.auth import AccessAttempt
 
 logger = logging.getLogger(__name__)
 
