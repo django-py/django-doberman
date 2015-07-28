@@ -2,7 +2,7 @@
 import logging
 from functools import wraps
 
-from doberman.core.auth import AccessAttempt
+from .auth import AccessAttempt
 
 logger = logging.getLogger(__name__)
 
