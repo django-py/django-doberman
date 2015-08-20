@@ -14,6 +14,7 @@ from settings import (
     DOBERMAN_CUSTOM_MODEL
 )
 
+
 def get_doberman_model():
         try:
             return apps.get_model(DOBERMAN_CUSTOM_MODEL)
@@ -23,6 +24,7 @@ def get_doberman_model():
             raise DobermanImproperlyConfigured(
                 "DOBERMAN-MODEL refers to model '%s' that has not been installed: " % DOBERMAN_CUSTOM_MODEL
             )
+
 
 class AccessAttempt(AccessIPAddress):
     """
