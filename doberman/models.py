@@ -6,8 +6,7 @@ except ImportError:
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
-from settings import DOBERMAN_LOGIN_FORGOTTEN_SECONDS
+from doberman import configuration
 
 
 class AbstractFailedAccessAttempt(models.Model):
@@ -75,7 +74,7 @@ class AbstractFailedAccessAttempt(models.Model):
         """
         Returns the time until this access attempt is forgotten.
         """
-        logging_forgotten_time = DOBERMAN_LOGIN_FORGOTTEN_SECONDS
+        logging_forgotten_time = configuration.behavior.login_forgotten_seconds
 
         if logging_forgotten_time <= 0:
             return None
