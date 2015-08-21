@@ -6,23 +6,16 @@ from django.apps import apps
 
 from contrib.ipware import AccessIPAddress
 from exceptions import DobermanImproperlyConfigured
-from settings import (
-    DOBERMAN_USERNAME_FORM_FIELD,
-    DOBERMAN_MAX_FAILED_ATTEMPTS,
-    DOBERMAN_LOCKOUT_TIME,
-    DOBERMAN_IPLOCKOUT_TEMPLATE,
-    DOBERMAN_CUSTOM_MODEL
-)
-
+from doberman import configuration
 
 def get_doberman_model():
         try:
-            return apps.get_model(DOBERMAN_CUSTOM_MODEL)
+            return apps.get_model(configuration.doberman_model)
         except ValueError:
             raise DobermanImproperlyConfigured("AUTH_USER_MODEL must be of the form 'app_label.model_name'")
         except LookupError:
             raise DobermanImproperlyConfigured(
-                "DOBERMAN-MODEL refers to model '%s' that has not been installed: " % DOBERMAN_CUSTOM_MODEL
+                "DOBERMAN-MODEL refers to model '%s' that has not been installed: " % configuration.doberman_model
             )
 
 
@@ -30,9 +23,9 @@ class AccessAttempt(AccessIPAddress):
     """
     Failed Access Attempt class
     """
-    max_failed_attempts = DOBERMAN_MAX_FAILED_ATTEMPTS
-    block_login_seconds = DOBERMAN_LOCKOUT_TIME
-    template_name = DOBERMAN_IPLOCKOUT_TEMPLATE
+    max_failed_attempts = configuration.behavior.max_failed_attempts
+    block_login_seconds = configuration.behavior.lockout_time
+    template_name = configuration.iplockout_template
 
     def __init__(self, request, response):
         super(AccessAttempt, self).__init__()
@@ -47,7 +40,7 @@ class AccessAttempt(AccessIPAddress):
         self.ip = self.get_client_ip_address(self.request)
 
         self.last_attempt_instance = None
-        self.username = self.request.POST.get(DOBERMAN_USERNAME_FORM_FIELD, None)
+        self.username = self.request.POST.get(configuration.username_form_field, None)
 
         self._FailedAccessAttemptModel = get_doberman_model()  # doberman supported custom models, see documentation
 

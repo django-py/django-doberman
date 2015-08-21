@@ -48,3 +48,6 @@ class DobermanSettings(object):
         self.captcha = CaptchaSettings()
         self.network = NetworkSettings()
         self.behavior = BehaviorSettings()
+
+    def __del__(self):
+            print "DobermanSettings: bye"

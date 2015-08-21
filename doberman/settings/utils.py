@@ -17,5 +17,5 @@ def setting_name(*names):
     :param names:
     :return:
     """
-    return _to_setting_name(*((SETTING_PREFIX,) + names))
+    return _to_setting_name(*(('DOBERMAN',) + names))
 

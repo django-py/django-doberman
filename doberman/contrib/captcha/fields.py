@@ -16,7 +16,7 @@ from django.forms.widgets import HiddenInput
 from captcha import client
 from captcha.widgets import ReCaptcha
 
-from doberman.settings import DOBERMAN_USERNAME_FORM_FIELD
+from doberman import configuration
 from doberman.auth import get_doberman_model
 from doberman.contrib.ipware import AccessIPAddress
 from doberman.models import FailedAccessAttempt
@@ -89,7 +89,7 @@ class DobermanCaptchaField(forms.CharField):
             if 'request' in f.f_locals:
                 request = f.f_locals['request']
                 if request:
-                    self._username = request.POST.get(DOBERMAN_USERNAME_FORM_FIELD, None)
+                    self._username = request.POST.get(configuration.username_form_field, None)
                     access = AccessIPAddress()
                     self._ip = access.get_client_ip_address(request)
 
